@@ -51,7 +51,14 @@ namespace productConsumer
                             userDetail.IsActive = false;
 
                             List<TransactionHistory> listTransaction = product.TransactionList;
-                            listTransaction.Add(new TransactionHistory() { TableName = "Products", ID = productModel.Id });
+                            listTransaction.Add(new TransactionHistory()
+                            {
+                                TableName = "Products",
+                                ID = productModel.Id,
+                                State = TransactionState.Pending,
+                                Step = TransactionStep.Product,
+                                Type = TransactionType.SqlDB
+                            });
                             userDetail.TransactionList = listTransaction;
 
                             Console.WriteLine(PushRabbitMQ(userDetail));
@@ -64,7 +71,7 @@ namespace productConsumer
                             userDetail.UserId = product.UserId;
                             userDetail.IsActive = false;
 
-                            List<TransactionHistory> listTransaction = product.TransactionList;                            
+                            List<TransactionHistory> listTransaction = product.TransactionList;
                             userDetail.TransactionList = listTransaction;
 
                             Console.WriteLine(PushRabbitMQ(userDetail));

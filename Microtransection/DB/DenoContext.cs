@@ -24,7 +24,7 @@ namespace Microtransection.DB
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=tcp:192.168.1.7,1433;Database=Deno;User ID=***;Password=******;");
+                optionsBuilder.UseSqlServer("Server=tcp:192.168.1.169,1433;Database=Deno;User ID=*****;Password=*****;");
             }
         }
 

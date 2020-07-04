@@ -47,7 +47,19 @@ namespace userDetailConsumer
                         {
                             string TableName = dataTransaction.TableName;
                             int ID = dataTransaction.ID;
-                            context.ExecuteQuery($"UPDATE {TableName}  SET IsActive = 1 WHERE Id = {ID}");
+                            //Different Resource Type Case SQL
+                            //Strategy Design Pattern
+                            if (dataTransaction.Type == TransactionType.SqlDB && dataTransaction.State == TransactionState.Pending)
+                            {
+                                context.ExecuteQuery($"UPDATE {TableName}  SET IsActive = 1 WHERE Id = {ID}");
+                                dataTransaction.State = TransactionState.Completed;                             
+                            }
+
+                            //Run Different Bussines Logic By Step Name
+                            if (dataTransaction.Step == TransactionStep.Product && dataTransaction.State==TransactionState.Completed)
+                            {
+
+                            }
                         }
                     }
                     //-------------------------

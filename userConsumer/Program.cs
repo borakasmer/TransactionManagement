@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
-using Newtonsoft.Json;
+//using Newtonsoft.Json;
+using System.Text.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using userConsumer.DB;
@@ -32,7 +33,8 @@ namespace userConsumer
                 {
                     var body = ea.Body.Span;
                     var data = Encoding.UTF8.GetString(body);
-                    UserShop user = JsonConvert.DeserializeObject<UserShop>(data);
+                    //UserShop user = JsonConvert.DeserializeObject<UserShop>(data);
+                    UserShop user = JsonSerializer.Deserialize<UserShop>(data);
                     Console.WriteLine(" [x] Received {0}", user.name + " : " + user.surname);
 
                     using (DenoContext context = new DenoContext())
@@ -54,7 +56,14 @@ namespace userConsumer
                             product.IsActive = false;
 
                             List<TransactionHistory> listTransaction = new List<TransactionHistory>();
-                            listTransaction.Add(new TransactionHistory() { TableName = "Users", ID = userModel.Id });
+                            listTransaction.Add(new TransactionHistory()
+                            {
+                                TableName = "Users",
+                                ID = userModel.Id,
+                                State = TransactionState.Pending,
+                                Step = TransactionStep.User,
+                                Type = TransactionType.SqlDB
+                            });
                             product.TransactionList = listTransaction;
 
                             Console.WriteLine(PushRabbitMQ(product));
@@ -97,8 +106,9 @@ namespace userConsumer
                                      exclusive: false,
                                      autoDelete: false,
                                      arguments: null);
+                var stocData = JsonSerializer.Serialize(data);
 
-                var stocData = JsonConvert.SerializeObject(data);
+                //var stocData = JsonConvert.SerializeObject(data);
                 var body = Encoding.UTF8.GetBytes(stocData);
 
                 channel.BasicPublish(exchange: "",
